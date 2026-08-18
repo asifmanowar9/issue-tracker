@@ -24,12 +24,9 @@
 .DS_Store
 *.pem
 
-/AGENTS.md
-CLAUDE.md
-COMPLETION_REPORT.txt
-IMPLEMENTATION_GUIDE.md
-PROJECT_COMPLETION_SUMMARY.md
-QUICK_REFERENCE.md
+*.md
+!README.md
+
 
 # debug
 npm-debug.log*
