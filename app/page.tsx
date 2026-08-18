@@ -1,8 +1,7 @@
+import DashboardPage from "./(dashboard)/dashboard/page";
+
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return (
-    <main>
-      <h1>IssueTracker</h1>
-      <p>Task and Issue Management System</p>
-    </main>
-  );
+  redirect("/dashboard");
 }
