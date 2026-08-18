@@ -168,9 +168,13 @@ export default function DashboardPage() {
                     key={issue.id}
                     className="rounded px-3 py-2 text-sm hover:bg-gray-100"
                   >
-                    <p className="font-medium">
-                      {issue.title}
-                    </p>
+                    <Link
+                  key={issue.id}
+                  href={`/projects/${issue.project_id}/issues/${issue.id}`}
+                  className="block rounded px-3 py-2 text-sm hover:bg-gray-100"
+                >
+                  {issue.title}
+                </Link>
                     <p className="text-xs text-muted-foreground">
                       {issue.status}
                     </p>
