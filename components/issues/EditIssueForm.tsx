@@ -1,86 +1,123 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 
-import { createIssue } from "@/lib/queries/issues";
+import {
+  getIssue,
+  updateIssue,
+} from "@/lib/queries/issues";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import DeleteIssueButton from "@/components/issues/DeleteIssueButton";
 
-type CreateIssueFormValues = {
+type EditIssueFormValues = {
   title: string;
   description: string;
   status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 };
 
-type CreateIssueFormProps = {
+type EditIssueFormProps = {
   projectId: string;
+  issueId: string;
 };
 
-export default function CreateIssueForm({
+export default function EditIssueForm({
   projectId,
-}: CreateIssueFormProps) {
+  issueId,
+}: EditIssueFormProps) {
   const queryClient = useQueryClient();
+
+  const {
+    data: issue,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["issues", projectId, issueId],
+    queryFn: () => getIssue(issueId),
+  });
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    getValues,
     watch,
     formState: { 
         errors,
         isDirty,
         isSubmitting,
      },
-  } = useForm<CreateIssueFormValues>({
-    defaultValues: {
-        title: "",
-        description: "",
-      status: "OPEN",
-      priority: "MEDIUM",
-    },
-  });
+  } = useForm<EditIssueFormValues>();
 
-  const priority = watch("priority");
+  useEffect(() => {
+    if (!issue) {
+        return;
+    }
+      reset({
+        title: issue.title,
+        description: issue.description ?? "",
+        status: issue.status,
+        priority: issue.priority,
+      });
+  }, [issue, reset]);
 
   const mutation = useMutation({
-    mutationFn: createIssue,
+    mutationFn: updateIssue,
 
-    onSuccess: () => {
+    onSuccess: (updatedIssue) => {
+      queryClient.setQueryData(
+        ["issues", projectId, issueId],
+        updatedIssue
+      );
+
       queryClient.invalidateQueries({
         queryKey: ["issues", projectId],
       });
-
-      reset();
     },
   });
 
-  function onSubmit(data: CreateIssueFormValues) {
+  function onSubmit(data: EditIssueFormValues) {
     mutation.mutate({
-      projectId,
+      id: issueId,
       ...data,
     });
+  }
+
+  if (isLoading) {
+    return <p>Loading issue...</p>;
+  }
+
+  if (error) {
+    return <p>Failed to load issue.</p>;
+  }
+
+  if (!issue) {
+    return <p>Issue not found.</p>;
   }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-xl space-y-6 rounded-lg border p-6"
+      className="space-y-6 rounded-lg border p-6"
     >
       <div>
-        <h2 className="text-lg font-semibold">
-          Create Issue
-        </h2>
+        <h1 className="text-xl font-semibold">
+          Edit Issue
+        </h1>
 
         <p className="text-sm text-muted-foreground">
-          Report a new issue for this project.
+          Update the issue information.
         </p>
       </div>
 
@@ -91,7 +128,6 @@ export default function CreateIssueForm({
 
         <Input
           id="title"
-          placeholder="Fix login redirect"
           {...register("title", {
             required: "Issue title is required",
           })}
@@ -111,7 +147,6 @@ export default function CreateIssueForm({
 
         <Textarea
           id="description"
-          placeholder="Describe the issue..."
           {...register("description")}
         />
       </div>
@@ -127,7 +162,9 @@ export default function CreateIssueForm({
           {...register("status")}
         >
           <option value="OPEN">Open</option>
-          <option value="IN_PROGRESS">In Progress</option>
+          <option value="IN_PROGRESS">
+            In Progress
+          </option>
           <option value="RESOLVED">Resolved</option>
           <option value="CLOSED">Closed</option>
         </select>
@@ -149,32 +186,31 @@ export default function CreateIssueForm({
           <option value="URGENT">Urgent</option>
         </select>
       </div>
-      {priority === "URGENT" && (
-  <p className="text-sm text-destructive">
-    This issue has been marked as urgent.
-  </p>
-)}
 
       {mutation.isError && (
         <p className="text-sm text-destructive">
           {mutation.error.message}
         </p>
       )}
-      
-      {isDirty && (
-  <p className="text-sm text-muted-foreground">
-    You have unsaved changes.
-  </p>
-)}
+
+      {mutation.isSuccess && (
+        <p className="text-sm text-green-600">
+          Issue updated successfully.
+        </p>
+      )}
 
       <Button
         type="submit"
         disabled={mutation.isPending}
       >
         {mutation.isPending
-          ? "Creating..."
-          : "Create Issue"}
+          ? "Saving..."
+          : "Save Changes"}
       </Button>
+      <DeleteIssueButton
+  projectId={projectId}
+  issueId={issueId}
+/>
     </form>
   );
 }

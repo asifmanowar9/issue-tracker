@@ -22,6 +22,14 @@ export default function ProjectsList() {
     return <p>Failed to load projects.</p>;
   }
 
+  if (!data || data.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        No projects found.
+      </p>
+    );
+  }
+
   return (
     <div>
      {data?.map((project) => (

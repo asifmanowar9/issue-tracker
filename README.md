@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IssueTracker
+
+A full-stack task and issue tracking application built with Next.js, React Hook Form, TanStack Query, and Supabase.
+
+## Features
+
+- User registration and login
+- Project creation and management
+- Issue creation, editing, viewing, and deletion
+- Issue filtering by status and priority
+- Project and issue data fetching with TanStack Query
+- Form handling with React Hook Form
+- Supabase PostgreSQL database
+- Supabase Authentication
+- Row Level Security (RLS)
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- React Hook Form
+- TanStack Query
+- Supabase
+- PostgreSQL
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd IssueTracker
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure environment variables
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Main Concepts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### React Hook Form
 
-## Learn More
+Used for:
 
-To learn more about Next.js, take a look at the following resources:
+- Issue forms
+- Project forms
+- Form validation and errors
+- Form state
+- `watch()`
+- `reset()`
+- `setValue()`
+- `getValues()`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### TanStack Query
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Used for:
 
-## Deploy on Vercel
+- Fetching projects and issues with `useQuery`
+- Query caching
+- Loading and error states
+- Query keys
+- Refetching
+- Mutations
+- Query invalidation after changes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+app/
+components/
+lib/
+  queries/
+  supabase/
+types/
+```
+
+## License
+
+This project is for learning and internship evaluation purposes.
