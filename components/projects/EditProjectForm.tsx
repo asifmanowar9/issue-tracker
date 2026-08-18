@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
-    useQuery,
+  useQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import DeleteProjectButton from "@/components/projects/DeleteProjectButton";
 
 type EditProjectFormValues = {
   name: string;
@@ -157,6 +158,8 @@ export default function EditProjectForm({
           ? "Saving..."
           : "Save Changes"}
       </Button>
+
+      <DeleteProjectButton projectId={projectId} />
     </form>
   );
 }

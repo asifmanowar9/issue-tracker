@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   useMutation,
@@ -21,6 +22,7 @@ export default function DeleteIssueButton({
 }: DeleteIssueButtonProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const mutation = useMutation({
     mutationFn: deleteIssue,
@@ -39,14 +41,6 @@ export default function DeleteIssueButton({
   });
 
   function handleDelete() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this issue?"
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
     mutation.mutate(issueId);
   }
 

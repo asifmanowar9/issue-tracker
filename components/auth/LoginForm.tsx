@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -16,6 +18,8 @@ type LoginFormValues = {
 
 export default function LoginForm() {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] =
+    useState<string | null>(null);
 
   const {
     register,
@@ -24,15 +28,17 @@ export default function LoginForm() {
   } = useForm<LoginFormValues>();
 
   async function onSubmit(data: LoginFormValues) {
+    setErrorMessage(null);
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
+    const { error } = await
+      supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
     if (error) {
-      console.error(error.message);
+      setErrorMessage(error.message);
       return;
     }
 
@@ -85,6 +91,13 @@ export default function LoginForm() {
         )}
       </div>
 
+      {/* Error Message */}
+      {errorMessage && (
+        <p className="text-sm text-destructive">
+          {errorMessage}
+        </p>
+      )}
+
       {/* Submit */}
       <Button
         type="submit"
@@ -93,6 +106,17 @@ export default function LoginForm() {
       >
         {isSubmitting ? "Logging in..." : "Login"}
       </Button>
+
+      {/* Register Link */}
+      <p className="text-center text-sm text-muted-foreground">
+        Don't have an account?{" "}
+        <Link
+          href="/register"
+          className="text-blue-600 hover:underline"
+        >
+          Register
+        </Link>
+      </p>
     </form>
   );
 }
